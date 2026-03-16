@@ -5,25 +5,34 @@ import { StyleSheet, Text, View, Button, Alert } from 'react-native';
 export default function App() {
   const [pontosNos, setPontosNos] = useState(0);
   const [pontosEles, setPontosEles] = useState(0);
-  
-  // Novos estados para a Etapa 4
   const [vitoriasNos, setVitoriasNos] = useState(0);
   const [vitoriasEles, setVitoriasEles] = useState(0);
 
-  // Lógica para verificar vencedor e resetar rodada
+  // Lógica de vencedor automático
   useEffect(() => {
     if (pontosNos >= 12) {
-      Alert.alert("Vitória!", "O time NÓS ganhou a rodada!");
+      Alert.alert("Vitória!", "O time NÓS ganhou esta partida!");
       setVitoriasNos(vitoriasNos + 1);
-      setPontosNos(0);
-      setPontosEles(0);
+      reiniciarPartida();
     } else if (pontosEles >= 12) {
-      Alert.alert("Vitória!", "O time ELES ganhou a rodada!");
+      Alert.alert("Vitória!", "O time ELES ganhou esta partida!");
       setVitoriasEles(vitoriasEles + 1);
-      setPontosNos(0);
-      setPontosEles(0);
+      reiniciarPartida();
     }
   }, [pontosNos, pontosEles]);
+
+  // Função Reiniciar: Zera pontuação, mantém vitórias
+  const reiniciarPartida = () => {
+    setPontosNos(0);
+    setPontosEles(0);
+  };
+
+  // Função Novo Jogo: Zera tudo
+  const novoJogo = () => {
+    reiniciarPartida();
+    setVitoriasNos(0);
+    setVitoriasEles(0);
+  };
 
   const somar = (time, valor) => {
     if (time === 'nos') setPontosNos(pontosNos + valor);
@@ -44,18 +53,14 @@ export default function App() {
         <View style={styles.timeBox}>
           <Text style={styles.label}>Nós</Text>
           <Text style={styles.pontuacao}>{pontosNos}</Text>
-          
           <View style={styles.controlesSimples}>
             <Button title=" +1 " onPress={() => somar('nos', 1)} color="#4CAF50" />
             <Button title=" -1 " onPress={() => subtrair('nos')} color="#F44336" />
           </View>
-          
           <View style={styles.botoesTruco}>
             <Button title="TRUCO" onPress={() => somar('nos', 3)} color="#FF9800" />
             <Button title="6" onPress={() => somar('nos', 6)} color="#FF5722" />
           </View>
-
-          {/* NOVIDADE ETAPA 4 */}
           <View style={styles.vitoriaBox}>
             <Text style={styles.vitoriaLabel}>Vitórias</Text>
             <Text style={styles.vitoriaValor}>{vitoriasNos}</Text>
@@ -66,18 +71,14 @@ export default function App() {
         <View style={styles.timeBox}>
           <Text style={styles.label}>Eles</Text>
           <Text style={styles.pontuacao}>{pontosEles}</Text>
-          
           <View style={styles.controlesSimples}>
             <Button title=" +1 " onPress={() => somar('eles', 1)} color="#4CAF50" />
             <Button title=" -1 " onPress={() => subtrair('eles')} color="#F44336" />
           </View>
-          
           <View style={styles.botoesTruco}>
             <Button title="TRUCO" onPress={() => somar('eles', 3)} color="#FF9800" />
             <Button title="6" onPress={() => somar('eles', 6)} color="#FF5722" />
           </View>
-
-          {/* NOVIDADE ETAPA 4 */}
           <View style={styles.vitoriaBox}>
             <Text style={styles.vitoriaLabel}>Vitórias</Text>
             <Text style={styles.vitoriaValor}>{vitoriasEles}</Text>
@@ -85,13 +86,14 @@ export default function App() {
         </View>
       </View>
 
+      {/* NOVIDADE ETAPA 5: Controles da Partida */}
       <View style={styles.footer}>
-        <Button title="Zerar Tudo" onPress={() => {
-          setPontosNos(0);
-          setPontosEles(0);
-          setVitoriasNos(0);
-          setVitoriasEles(0);
-        }} color="#607D8B" />
+        <View style={styles.buttonSpacing}>
+          <Button title="Reiniciar Partida" onPress={reiniciarPartida} color="#2196F3" />
+        </View>
+        <View style={styles.buttonSpacing}>
+          <Button title="Zerar Tudo (Novo Jogo)" onPress={novoJogo} color="#607D8B" />
+        </View>
       </View>
 
       <StatusBar style="auto" />
@@ -143,22 +145,24 @@ const styles = StyleSheet.create({
   vitoriaBox: {
     marginTop: 25,
     alignItems: 'center',
-    padding: 10,
+    padding: 8,
     backgroundColor: '#f0f0f0',
     borderRadius: 10,
     width: '100%',
   },
   vitoriaLabel: {
-    fontSize: 14,
-    textTransform: 'uppercase',
+    fontSize: 12,
     color: '#666',
   },
   vitoriaValor: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
   },
   footer: {
     marginTop: 40,
+    width: '80%',
+  },
+  buttonSpacing: {
+    marginVertical: 5,
   }
 });
