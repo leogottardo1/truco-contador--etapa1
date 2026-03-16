@@ -3,31 +3,32 @@ import { useState } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 
 export default function App() {
-  const [contador, setContador] = useState(0); // Começando em 0 para ser um marcador padrão
-
-  function aumentarContagem() {
-    setContador(contador + 1);
-  }
-
-  function diminuirContagem() {
-    if (contador > 0) {
-      setContador(contador - 1);
-    }
-  }
+  const [pontosNos, setPontosNos] = useState(0);
+  const [pontosEles, setPontosEles] = useState(0);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>Marcador</Text>
-      
-      <Text style={styles.valor}>{contador}</Text>
+      <Text style={styles.titulo}>Placar de Truco</Text>
 
-      <View style={styles.buttonContainer}>
-        <View style={styles.buttonWrapper}>
-          <Button onPress={aumentarContagem} title=" + " color="#4CAF50" />
+      <View style={styles.placarContainer}>
+        {/* Time Nós */}
+        <View style={styles.timeBox}>
+          <Text style={styles.label}>Nós</Text>
+          <Text style={styles.pontuacao}>{pontosNos}</Text>
+          <Button title=" + " onPress={() => setPontosNos(pontosNos + 1)} color="#4CAF50" />
+          <View style={{ marginTop: 10 }}>
+            <Button title=" - " onPress={() => pontosNos > 0 && setPontosNos(pontosNos - 1)} color="#f44336" />
+          </View>
         </View>
-        
-        <View style={styles.buttonWrapper}>
-          <Button onPress={diminuirContagem} title=" - " color="#F44336" />
+
+        {/* Time Eles */}
+        <View style={styles.timeBox}>
+          <Text style={styles.label}>Eles</Text>
+          <Text style={styles.pontuacao}>{pontosEles}</Text>
+          <Button title=" + " onPress={() => setPontosEles(pontosEles + 1)} color="#4CAF50" />
+          <View style={{ marginTop: 10 }}>
+            <Button title=" - " onPress={() => pontosEles > 0 && setPontosEles(pontosEles - 1)} color="#f44336" />
+          </View>
         </View>
       </View>
 
@@ -39,27 +40,32 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
   titulo: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#333',
+    marginBottom: 40,
   },
-  valor: {
-    fontSize: 80, // Destaque para o número
-    fontWeight: 'bold',
-    color: '#2196F3',
-    marginBottom: 30,
-  },
-  buttonContainer: {
+  placarContainer: {
     flexDirection: 'row',
-    gap: 20, // Espaçamento moderno entre botões
+    justifyContent: 'space-around',
+    width: '100%',
   },
-  buttonWrapper: {
-    width: 100, // Garante que os botões tenham o mesmo tamanho
-  }
+  timeBox: {
+    alignItems: 'center',
+    width: '40%',
+  },
+  label: {
+    fontSize: 22,
+    fontWeight: '600',
+  },
+  pontuacao: {
+    fontSize: 60,
+    fontWeight: 'bold',
+    marginVertical: 15,
+    color: '#2196F3',
+  },
 });
