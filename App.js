@@ -6,30 +6,60 @@ export default function App() {
   const [pontosNos, setPontosNos] = useState(0);
   const [pontosEles, setPontosEles] = useState(0);
 
+  // Função genérica para somar pontos
+  const somar = (time, valor) => {
+    if (time === 'nos') setPontosNos(pontosNos + valor);
+    else setPontosEles(pontosEles + valor);
+  };
+
+  // Função para subtrair (não deixa ficar negativo)
+  const subtrair = (time) => {
+    if (time === 'nos' && pontosNos > 0) setPontosNos(pontosNos - 1);
+    else if (time === 'eles' && pontosEles > 0) setPontosEles(pontosEles - 1);
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>Placar de Truco</Text>
+      <Text style={styles.titulo}>Marcador de Truco</Text>
 
       <View style={styles.placarContainer}>
-        {/* Time Nós */}
+        {/* TIME NÓS */}
         <View style={styles.timeBox}>
           <Text style={styles.label}>Nós</Text>
           <Text style={styles.pontuacao}>{pontosNos}</Text>
-          <Button title=" + " onPress={() => setPontosNos(pontosNos + 1)} color="#4CAF50" />
-          <View style={{ marginTop: 10 }}>
-            <Button title=" - " onPress={() => pontosNos > 0 && setPontosNos(pontosNos - 1)} color="#f44336" />
+          <View style={styles.controlesSimples}>
+            <Button title=" +1 " onPress={() => somar('nos', 1)} color="#4CAF50" />
+            <Button title=" -1 " onPress={() => subtrair('nos')} color="#F44336" />
+          </View>
+          <View style={styles.botoesTruco}>
+            <Button title="TRUCO" onPress={() => somar('nos', 3)} color="#FF9800" />
+            <Button title="6" onPress={() => somar('nos', 6)} color="#FF5722" />
           </View>
         </View>
 
-        {/* Time Eles */}
+        {/* TIME ELES */}
         <View style={styles.timeBox}>
           <Text style={styles.label}>Eles</Text>
           <Text style={styles.pontuacao}>{pontosEles}</Text>
-          <Button title=" + " onPress={() => setPontosEles(pontosEles + 1)} color="#4CAF50" />
-          <View style={{ marginTop: 10 }}>
-            <Button title=" - " onPress={() => pontosEles > 0 && setPontosEles(pontosEles - 1)} color="#f44336" />
+          <View style={styles.controlesSimples}>
+            <Button title=" +1 " onPress={() => somar('eles', 1)} color="#4CAF50" />
+            <Button title=" -1 " onPress={() => subtrair('eles')} color="#F44336" />
+          </View>
+          <View style={styles.botoesTruco}>
+            <Button title="TRUCO" onPress={() => somar('eles', 3)} color="#FF9800" />
+            <Button title="6" onPress={() => somar('eles', 6)} color="#FF5722" />
           </View>
         </View>
+      </View>
+
+      {/* Botões de 9 e 12 para ambos no rodapé para economizar espaço */}
+      <View style={styles.footerApostas}>
+        <Text style={styles.textoAposta}>Aumentar para:</Text>
+        <View style={styles.row}>
+           <Button title=" NOVE (9) " onPress={() => {}} disabled color="#E91E63" /> 
+           <Button title=" DOZE (12) " onPress={() => {}} disabled color="#9C27B0" />
+        </View>
+        <Text style={{fontSize: 10, marginTop: 5}}>* Clique nos botões acima de cada time para pontuar</Text>
       </View>
 
       <StatusBar style="auto" />
@@ -43,11 +73,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: 50
   },
   titulo: {
-    fontSize: 30,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 40,
+    marginBottom: 30,
   },
   placarContainer: {
     flexDirection: 'row',
@@ -56,16 +87,37 @@ const styles = StyleSheet.create({
   },
   timeBox: {
     alignItems: 'center',
-    width: '40%',
+    width: '45%',
   },
   label: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
   pontuacao: {
-    fontSize: 60,
+    fontSize: 70,
     fontWeight: 'bold',
-    marginVertical: 15,
     color: '#2196F3',
+    marginVertical: 10,
   },
+  controlesSimples: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 15,
+  },
+  botoesTruco: {
+    width: '100%',
+    gap: 10,
+  },
+  footerApostas: {
+    marginTop: 40,
+    alignItems: 'center',
+  },
+  textoAposta: {
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  row: {
+    flexDirection: 'row',
+    gap: 10,
+  }
 });
