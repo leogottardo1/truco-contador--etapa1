@@ -1,18 +1,35 @@
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Button, Alert } from 'react-native';
 
 export default function App() {
   const [pontosNos, setPontosNos] = useState(0);
   const [pontosEles, setPontosEles] = useState(0);
+  
+  // Novos estados para a Etapa 4
+  const [vitoriasNos, setVitoriasNos] = useState(0);
+  const [vitoriasEles, setVitoriasEles] = useState(0);
 
-  // Função genérica para somar pontos
+  // Lógica para verificar vencedor e resetar rodada
+  useEffect(() => {
+    if (pontosNos >= 12) {
+      Alert.alert("Vitória!", "O time NÓS ganhou a rodada!");
+      setVitoriasNos(vitoriasNos + 1);
+      setPontosNos(0);
+      setPontosEles(0);
+    } else if (pontosEles >= 12) {
+      Alert.alert("Vitória!", "O time ELES ganhou a rodada!");
+      setVitoriasEles(vitoriasEles + 1);
+      setPontosNos(0);
+      setPontosEles(0);
+    }
+  }, [pontosNos, pontosEles]);
+
   const somar = (time, valor) => {
     if (time === 'nos') setPontosNos(pontosNos + valor);
     else setPontosEles(pontosEles + valor);
   };
 
-  // Função para subtrair (não deixa ficar negativo)
   const subtrair = (time) => {
     if (time === 'nos' && pontosNos > 0) setPontosNos(pontosNos - 1);
     else if (time === 'eles' && pontosEles > 0) setPontosEles(pontosEles - 1);
@@ -27,13 +44,21 @@ export default function App() {
         <View style={styles.timeBox}>
           <Text style={styles.label}>Nós</Text>
           <Text style={styles.pontuacao}>{pontosNos}</Text>
+          
           <View style={styles.controlesSimples}>
             <Button title=" +1 " onPress={() => somar('nos', 1)} color="#4CAF50" />
             <Button title=" -1 " onPress={() => subtrair('nos')} color="#F44336" />
           </View>
+          
           <View style={styles.botoesTruco}>
             <Button title="TRUCO" onPress={() => somar('nos', 3)} color="#FF9800" />
             <Button title="6" onPress={() => somar('nos', 6)} color="#FF5722" />
+          </View>
+
+          {/* NOVIDADE ETAPA 4 */}
+          <View style={styles.vitoriaBox}>
+            <Text style={styles.vitoriaLabel}>Vitórias</Text>
+            <Text style={styles.vitoriaValor}>{vitoriasNos}</Text>
           </View>
         </View>
 
@@ -41,25 +66,32 @@ export default function App() {
         <View style={styles.timeBox}>
           <Text style={styles.label}>Eles</Text>
           <Text style={styles.pontuacao}>{pontosEles}</Text>
+          
           <View style={styles.controlesSimples}>
             <Button title=" +1 " onPress={() => somar('eles', 1)} color="#4CAF50" />
             <Button title=" -1 " onPress={() => subtrair('eles')} color="#F44336" />
           </View>
+          
           <View style={styles.botoesTruco}>
             <Button title="TRUCO" onPress={() => somar('eles', 3)} color="#FF9800" />
             <Button title="6" onPress={() => somar('eles', 6)} color="#FF5722" />
           </View>
+
+          {/* NOVIDADE ETAPA 4 */}
+          <View style={styles.vitoriaBox}>
+            <Text style={styles.vitoriaLabel}>Vitórias</Text>
+            <Text style={styles.vitoriaValor}>{vitoriasEles}</Text>
+          </View>
         </View>
       </View>
 
-      {/* Botões de 9 e 12 para ambos no rodapé para economizar espaço */}
-      <View style={styles.footerApostas}>
-        <Text style={styles.textoAposta}>Aumentar para:</Text>
-        <View style={styles.row}>
-           <Button title=" NOVE (9) " onPress={() => {}} disabled color="#E91E63" /> 
-           <Button title=" DOZE (12) " onPress={() => {}} disabled color="#9C27B0" />
-        </View>
-        <Text style={{fontSize: 10, marginTop: 5}}>* Clique nos botões acima de cada time para pontuar</Text>
+      <View style={styles.footer}>
+        <Button title="Zerar Tudo" onPress={() => {
+          setPontosNos(0);
+          setPontosEles(0);
+          setVitoriasNos(0);
+          setVitoriasEles(0);
+        }} color="#607D8B" />
       </View>
 
       <StatusBar style="auto" />
@@ -108,16 +140,25 @@ const styles = StyleSheet.create({
     width: '100%',
     gap: 10,
   },
-  footerApostas: {
-    marginTop: 40,
+  vitoriaBox: {
+    marginTop: 25,
     alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
+    width: '100%',
   },
-  textoAposta: {
+  vitoriaLabel: {
+    fontSize: 14,
+    textTransform: 'uppercase',
+    color: '#666',
+  },
+  vitoriaValor: {
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
+    color: '#333',
   },
-  row: {
-    flexDirection: 'row',
-    gap: 10,
+  footer: {
+    marginTop: 40,
   }
 });
